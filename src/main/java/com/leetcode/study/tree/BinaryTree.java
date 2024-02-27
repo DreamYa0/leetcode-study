@@ -1291,4 +1291,189 @@ public class BinaryTree {
         root1.right = mergeTrees(root1.right, root2.right);
         return root1;
     }
+
+    /**
+     * 2236. 判断根结点是否等于子结点之和
+     * @param root 根节点
+     * @return 根结点是否等于子结点之和
+     */
+    public boolean checkTree(TreeNode root) {
+        if (root == null) {
+            return false;
+        }
+        // 根节点值
+        int rootVal = root.val;
+        int sum = 0;
+        if (root.left != null) {
+            sum += root.left.val;
+        }
+        if (root.right != null) {
+            sum += root.right.val;
+        }
+        return rootVal == sum;
+    }
+
+    /**
+     * LCR 145. 判断对称二叉树
+     * @param root 根节点
+     * @return 是否对称二叉树
+     */
+    public boolean checkSymmetricTree(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return checkSymmetricTree(root.left, root.right);
+    }
+
+    private boolean checkSymmetricTree(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            // 如果左右节点都为空则返回true
+            return true;
+        }
+        if (left == null || right == null) {
+            // 如果一个为空一个不为空则返回false
+            return false;
+        }
+        // 左右节点都右值时判断值是否相等
+        if (left.val != right.val) {
+            // 如果值不相等返回false
+            return false;
+        }
+        // 处理值相等的情况
+        return checkSymmetricTree(left.left, right.right) && checkSymmetricTree(left.right, right.left);
+    }
+
+    /**
+     * LCR 194. 二叉树的最近公共祖先（前序遍历）
+     * <p>
+     * 1. 若树里面存在p，也存在q，则返回他们的公共祖先。
+     * 2. 若树里面只存在p，或只存在q，则返回存在的那一个。
+     * 3. 若树里面既不存在p，也不存在q，则返回null。
+     * @param root 根节点
+     * @param p    p节点
+     * @param q    q节点
+     * @return 最近公共祖先节点
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        // 根节点都为空,那么root为根的树中必定没有p与q
+        // 或者这么说,p与q均为null满足为null的子节点,也返回null
+        if (root == null) {
+            return null;
+        }
+        // 最近公共祖先的情况1:p或q直接为root,那么p或q就是所求
+        // 这里具体又可以分为几种情况:(设定p == root, q == root同理)
+        // 1.p与q均存在于root中,结论显然成立,返回p
+        // 2.p存在但q不存在root中,根据helper()定义,返回存在的那个节点,返回p
+        if (root == p) {
+            return p;
+        }
+        // 同理
+        if (root == q) {
+            return q;
+        }
+        // 递归求出root左右子树中p与q的最近公共祖先
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        // 最近公共祖先的情况2:p与q分居root异侧
+        // 这种情况就是左右两边各有一个p或q,root必定为所求
+        if (left != null && right != null) {
+            return root;
+        }
+        // left == null && right != null时,左边没有 右边有 的情况
+        // 最近公共祖先就是右边找到的那个(注意是已经递归出栈将祖先找出来了!)
+        if (left == null) {
+            return right;
+        }
+        // 同理
+        if (right == null) {
+            return left;
+        }
+        // left == null && right == null时
+        // root两边都找不到,root本身也不是p或q,root又不为null
+        return null;
+    }
+
+    /**
+     * 面试题 04.02. 最小高度树
+     * @param nums 数组
+     * @return 二叉树
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return null;
+        }
+        return traversal(nums, 0, nums.length);
+    }
+
+    private TreeNode traversal(int[] nums, int left, int right) {
+        if (left >= right) {
+            // 递归终止条件
+            return null;
+        }
+        // 从数组中间进行切割，找到数组中间节点下标
+        int mid = left + (right - left) / 2;
+        // 构造二叉树根节点
+        TreeNode root = new TreeNode(nums[mid]);
+        // 构造左子树
+        root.left = traversal(nums, left, mid);
+        // 构造右子树
+        root.right = traversal(nums, mid + 1, right);
+        return root;
+    }
+
+    /**
+     * 965. 单值二叉树
+     * @param root 根节点
+     * @return 是否单值二叉树
+     */
+    public boolean isUnivalTree(TreeNode root) {
+        if (root == null) {
+            // 递归终止条件
+            return true;
+        }
+        // 左
+        if (root.left != null) {
+            if (root.val != root.left.val || !isUnivalTree(root.left)) {
+                return false;
+            }
+        }
+        // 右
+        if (root.right != null) {
+            if (root.val != root.right.val || !isUnivalTree(root.right)) {
+                return false;
+            }
+        }
+        // 中
+        return true;
+    }
+
+    /**
+     * LCR 175. 计算二叉树的深度
+     * @param root 根节点
+     * @return 深度
+     */
+    public int calculateDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(calculateDepth(root.left), calculateDepth(root.right)) + 1;
+    }
+
+    /**
+     * LCR 144. 翻转二叉树
+     * @param root 根节点
+     * @return 翻转后的二叉树
+     */
+    public TreeNode mirrorTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        // 左
+        mirrorTree(root.left);
+        // 右
+        mirrorTree(root.right);
+        // 中，交换左右节点
+        swap(root);
+        return root;
+    }
 }
