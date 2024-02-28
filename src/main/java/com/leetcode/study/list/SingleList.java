@@ -1,5 +1,8 @@
 package com.leetcode.study.list;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author dreamyao
  * @title 单链表
@@ -342,5 +345,111 @@ public class SingleList {
         }
 
         return null;
+    }
+
+    /**
+     * 234. 回文链表
+     * @param head 头节点
+     * @return 是否回文链表
+     */
+    public boolean isPalindrome(ListNode head) {
+        // 如果链表为空直接返回
+        if (head == null) {
+            return true;
+        }
+
+        // 找到链表中间节点
+        ListNode firstHalfEnd = endOfFirstHalf(head);
+        // 反转链表后半段
+        ListNode secondHalfStart = reverseList(firstHalfEnd.next);
+
+        ListNode p1 = head;
+        ListNode p2 = secondHalfStart;
+        // 遍历后半段链表
+        while (p2 != null) {
+            if (p1.val != p2.val) {
+                return false;
+            }
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        // 还原链表
+        firstHalfEnd.next = reverseList(secondHalfStart);
+        return true;
+    }
+
+    /**
+     * 找到链表中间节点
+     * @param head 链表头节点
+     * @return 中间节点
+     */
+    private ListNode endOfFirstHalf(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+
+    /**
+     * LCR 140. 训练计划 II
+     * @param head 头节点
+     * @param cnt  倒数第 cnt 个训练项目编号
+     * @return 训练项目编号
+     */
+    public ListNode trainingPlan(ListNode head, int cnt) {
+        // 定义虚拟头节点
+        ListNode dummyHead = new ListNode(0);
+        // 虚拟头节点next指针指向head
+        dummyHead.next = head;
+        // 定义快慢指针
+        ListNode slow = dummyHead;
+        ListNode fast = dummyHead;
+        // 先让fast指针移动 cnt步
+        while (cnt > 0) {
+            fast = fast.next;
+            cnt--;
+        }
+        // 在遍历链表
+        while (fast.next != null) {
+            // 一起移动slow fast指针,目的是让slow指针停在需要返回的节点数据之前的节点
+            fast = fast.next;
+            slow = slow.next;
+        }
+        // slow.next节点就是需要返回的节点
+        return slow.next;
+    }
+
+    /**
+     * LCR 123. 图书整理 I
+     * @param head
+     * @return
+     */
+    public int[] reverseBookList(ListNode head) {
+        ListNode pre = null;
+        ListNode cur = head;
+        // 定义链表长度
+        int len = 0;
+        while (cur != null) {
+            // 统计链表长度
+            len++;
+            // 反转链表
+            ListNode temp = cur;
+            cur = cur.next;
+            temp.next = pre;
+            pre = temp;
+        }
+        // 定义结果集
+        int[] ans = new int[len];
+        int i = 0;
+        while (pre != null) {
+            // 遍历链表获取值
+            ans[i] = pre.val;
+            pre = pre.next;
+            i++;
+        }
+        return ans;
     }
 }
