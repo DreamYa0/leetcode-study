@@ -15,6 +15,7 @@ public class BinaryTree {
 
     private TreeNode pre = null;
     private int ans;
+    private Set<Integer> set = new HashSet<>();
 
     /**
      * 二叉树
@@ -1475,5 +1476,25 @@ public class BinaryTree {
         // 中，交换左右节点
         swap(root);
         return root;
+    }
+
+    /**
+     * 653. 两数之和 IV - 输入二叉搜索树（深度优先 + 哈希表）
+     * @param root 根节点
+     * @param k    和
+     * @return 是否存在
+     */
+    public boolean findTarget(TreeNode root, int k) {
+        if (root == null) {
+            return false;
+        }
+        // 中
+        if (set.contains(k - root.val)) {
+            return true;
+        } else {
+            set.add(root.val);
+        }
+        // 左 右
+        return findTarget(root.left, k) || findTarget(root.right, k);
     }
 }

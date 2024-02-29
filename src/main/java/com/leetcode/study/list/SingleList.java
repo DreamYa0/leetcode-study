@@ -295,6 +295,7 @@ public class SingleList {
 
     /**
      * 160. 相交链表
+     * LCR 023. 相交链表
      * @param headA 链表A
      * @param headB 链表B
      * @return 相交的节点
@@ -451,5 +452,32 @@ public class SingleList {
             i++;
         }
         return ans;
+    }
+
+    /**
+     * 面试题 02.02. 返回倒数第 k 个节点
+     * @param head 头节点
+     * @param k 单向链表中倒数第 k 个节点
+     * @return 返回该节点的值
+     */
+    public int kthToLast(ListNode head, int k) {
+        // 定义虚拟头节点
+        ListNode dummyHead=new ListNode(0);
+        dummyHead.next = head;
+        // 定义慢指针
+        ListNode slow = dummyHead;
+        // 定义快指针
+        ListNode fast = dummyHead;
+        // 让快指针先走k个节点
+        while (k-- > 0) {
+            fast = fast.next;
+        }
+        // 遍历链表
+        while (fast.next != null) {
+            fast = fast.next;
+            // 当链表遍历结束时slow指针指向位置的next节点就是，单向链表中倒数第 k 个节点
+            slow = slow.next;
+        }
+        return slow.next.val;
     }
 }
