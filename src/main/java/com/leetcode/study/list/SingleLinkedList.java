@@ -1,8 +1,5 @@
 package com.leetcode.study.list;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author dreamyao
  * @title 单链表
@@ -10,7 +7,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @SuppressWarnings("all")
-public class SingleList {
+public class SingleLinkedList {
 
     static class ListNode {
         // 值
