@@ -1,4 +1,4 @@
-package com.leetcode.study.tree;
+package com.leetcode.study.tree.multi;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

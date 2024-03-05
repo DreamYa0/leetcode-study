@@ -16,45 +16,6 @@ public class PostOrder {
     private int ans;
 
     /**
-     * 后序遍历（迭代法）
-     * @param root 根节点
-     * @return 遍历结果
-     */
-    public List<Integer> preorderTraversalBack(TreeNode root) {
-        List<Integer> result = new LinkedList<>();
-        Stack<TreeNode> stack = new Stack<>();
-        if (root != null) {
-            stack.push(root);
-        }
-        while (!stack.isEmpty()) {
-            TreeNode node = stack.peek();
-            // 将该节点弹出，避免重复操作，下面再将右中左节点添加到栈中 或 将空节点弹出
-            stack.pop();
-            if (node != null) {
-                // 添加中节点
-                stack.push(node);
-                // 中节点访问过，但是还没有处理，加入空节点做为标记。
-                stack.push(null);
-                // 添加右节点
-                if (node.right != null) {
-                    stack.push(node.right);
-                }
-                // 添加左节点
-                if (node.left != null) {
-                    stack.push(node.left);
-                }
-            } else {
-                // 只有遇到空节点的时候，才将下一个节点放进结果集
-                // 重新取出栈中元素
-                node = stack.pop();
-                // 加入到结果集
-                result.add(node.val);
-            }
-        }
-        return result;
-    }
-
-    /**
      * 104. 二叉树的最大深度（后序遍历）
      * @param root 根节点
      * @return 最大深度
@@ -556,5 +517,146 @@ public class PostOrder {
         boolean right = evaluateTree(root.right);
         // 中
         return root.val == 2 ? left || right : left && right;
+    }
+
+    /**
+     * 872. 叶子相似的树
+     * 请考虑一棵二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 叶值序列 。
+     * <p>
+     * <img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/16/tree.png" />
+     * <p>
+     * <p>
+     * 举个例子，如上图所示，给定一棵叶值序列为 (6, 7, 4, 9, 8) 的树。
+     * <p>
+     * 如果有两棵二叉树的叶值序列是相同，那么我们就认为它们是 叶相似 的。
+     * <p>
+     * 如果给定的两个根结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false 。
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <img src="https://assets.leetcode.com/uploads/2020/09/03/leaf-similar-1.jpg" />
+     * <p>
+     * <p>
+     * 输入：root1 = [3,5,1,6,2,9,8,null,null,7,4], root2 = [3,5,1,6,7,4,2,null,null,null,null,null,null,9,8]
+     * 输出：true
+     * 示例 2：
+     * <p>
+     * <img src="https://assets.leetcode.com/uploads/2020/09/03/leaf-similar-2.jpg" />
+     * <p>
+     * <p>
+     * 输入：root1 = [1,2,3], root2 = [1,3,2]
+     * 输出：false
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * 给定的两棵树结点数在 [1, 200] 范围内
+     * 给定的两棵树上的值在 [0, 200] 范围内
+     * @param root1
+     * @param root2
+     * @return
+     */
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+        List<Integer> node1 = new ArrayList<>();
+        leafSimilar(root1, node1);
+        List<Integer> node2 = new ArrayList<>();
+        leafSimilar(root2, node2);
+        if (node1.size() != node2.size()) {
+            return false;
+        }
+        for (int i = 0; i < node1.size(); i++) {
+            int v1 = node1.get(i);
+            int v2 = node2.get(i);
+            if (v1 != v2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void leafSimilar(TreeNode node, List<Integer> ans) {
+        if (node == null) {
+            return;
+        }
+        // 左
+        leafSimilar(node.left, ans);
+        // 右
+        leafSimilar(node.right, ans);
+        if (node.left == null && node.right == null) {
+            // 中 只需要把叶子节点加入到 ans中
+            ans.add(node.val);
+        }
+    }
+
+    /**
+     * 236. 二叉树的最近公共祖先
+     * 中等
+     * 相关标签
+     * 相关企业
+     * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+     * <p>
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+     * <p>
+     * <p>
+     * <p>
+     * 示例 1：
+     * <p>
+     * <img src="https://assets.leetcode.com/uploads/2018/12/14/binarytree.png" />
+     * <p>
+     * 输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+     * 输出：3
+     * 解释：节点 5 和节点 1 的最近公共祖先是节点 3 。
+     * 示例 2：
+     * <p>
+     * <img src="https://assets.leetcode.com/uploads/2018/12/14/binarytree.png" />
+     * <p>
+     * 输入：root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+     * 输出：5
+     * 解释：节点 5 和节点 4 的最近公共祖先是节点 5 。因为根据定义最近公共祖先节点可以为节点本身。
+     * 示例 3：
+     * <p>
+     * 输入：root = [1,2], p = 1, q = 2
+     * 输出：1
+     * <p>
+     * <p>
+     * 提示：
+     * <p>
+     * 树中节点数目在范围 [2, 105] 内。
+     * -109 <= Node.val <= 109
+     * 所有 Node.val 互不相同 。
+     * p != q
+     * p 和 q 均存在于给定的二叉树中。
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) {
+            return null;
+        }
+        if (root == p || root == q) {
+            return root;
+        }
+        // 左
+        TreeNode l = lowestCommonAncestor(root.left, p, q);
+        // 右
+        TreeNode r = lowestCommonAncestor(root.right, p, q);
+        // 中
+        if (l == null && r == null) {
+            // 没找到
+            return null;
+        } else if (l != null && r == null) {
+            // 说明p,q的公共祖先再左子树
+            return l;
+        } else if (l == null && r != null) {
+            // 说明p,q的公共祖先再右子树
+            return r;
+        } else {
+            // p,q公共祖先
+            return root;
+        }
     }
 }
